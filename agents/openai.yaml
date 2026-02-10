@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elysia Core Backend"
+  short_description: "Scaffold Elysia backend with auth, DB, MCP"
+  default_prompt: "Scaffold a Bun + Elysia backend using the standard Better Auth + Drizzle + Postgres + MCP template. Apply the required file structure, dependencies, scripts, and security defaults."
