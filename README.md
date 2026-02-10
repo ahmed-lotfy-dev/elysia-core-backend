@@ -5,7 +5,5 @@ Scaffold a Bun + Elysia backend with Better Auth, Drizzle ORM, Postgres, MCP end
 ## Install
 
 ```bash
-npx skills add <owner>/<repo> --skill elysia-core-backend
+npx skills add ahmed-lotfy-dev/elysia-core-backend --skill elysia-core-backend
 ```
-
-Replace `<owner>/<repo>` with your GitHub repo.
