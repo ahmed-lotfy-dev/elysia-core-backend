@@ -183,39 +183,62 @@ export default defineConfig({
 **src/mcp/index.ts**
 
 ```ts
+import { Elysia } from "elysia";
 import { mcp } from "elysia-mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-export const mcpPlugin = mcp({
-  serverInfo: {
-    name: "Base MCP",
-    version: "1.0.0",
-  },
-  capabilities: {
-    tools: {},
-    resources: {},
-    prompts: {},
-    logging: {},
-  },
-  setupServer: async (server: McpServer) => {
-    server.registerTool(
-      "health",
-      {
-        description: "Returns API health status",
-        inputSchema: z.object({}),
+const mcpPlugin = new Elysia({ name: "mcp-server" })
+  .onRequest(({ request }) => {
+    // Fix for clients that don't send proper Accept headers (e.g., OpenCode, some MCP clients)
+    // The MCP SDK requires both application/json and text/event-stream
+    const acceptHeader = request.headers.get("Accept");
+    if (acceptHeader && !acceptHeader.includes("text/event-stream")) {
+      const newHeaders = new Headers(request.headers);
+      newHeaders.set("Accept", `${acceptHeader}, text/event-stream`);
+      Object.defineProperty(request, "headers", {
+        value: newHeaders,
+        writable: false,
+      });
+    }
+  })
+  .use(
+    mcp({
+      stateless: true,
+      enableJsonResponse: true,
+      serverInfo: {
+        name: "Base MCP",
+        version: "1.0.0",
       },
-      async () => ({
-        content: [{ type: "text", text: "ok" }],
-      }),
-    );
-  },
-});
+      capabilities: {
+        tools: {},
+        resources: {},
+        prompts: {},
+        logging: {},
+      },
+      setupServer: async (server: McpServer) => {
+        server.registerTool(
+          "health",
+          {
+            description: "Returns API health status",
+            inputSchema: z.object({}),
+          },
+          async () => ({
+            content: [{ type: "text", text: "ok" }],
+          }),
+        );
+      },
+    })
+  );
+
+export { mcpPlugin };
 ```
 
 **Important**: Do not `.use(new McpServer(...))` directly. `McpServer` is **not** an Elysia plugin and will throw:
 `TypeError: undefined is not an object (evaluating 'plugin.promisedModules.size')`.
 Always wrap it with the `elysia-mcp` plugin as shown above and `.use(mcpPlugin)`.
+
+**Client Compatibility Note**: The `stateless: true` and `enableJsonResponse: true` options make the MCP server compatible with HTTP-based MCP clients that may not support full SSE streaming. The `onRequest` handler patches the Accept header to ensure compatibility with clients like OpenCode that only send `Accept: application/json`.
 
 ## Elysia App Bootstrap
 
