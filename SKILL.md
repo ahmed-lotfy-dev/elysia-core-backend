@@ -12,7 +12,7 @@ Create a minimal, production-ready Elysia backend skeleton with auth, database, 
 ## Workflow
 
 1. Confirm the target location and whether this is a brand-new scaffold or an existing Elysia server. If files already exist, avoid clobbering without explicit user approval.
-2. Use the official Elysia generator and Bun installs. Do not hand-roll the project.
+2. Use the official Elysia generator with latest templates and Bun installs: `bun create elysia@latest <target>`. Do not hand-roll the project or keep stale generated dependencies.
 3. Apply the exact folder structure, file contents, and package scripts from the reference guide.
 4. Add required environment variables to `.env` and call out secrets that must be user-provided.
 5. If the user requests, run migration commands and start the dev server.

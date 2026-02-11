@@ -19,9 +19,9 @@ No application logic, only base infrastructure.
 
 ## Official Scaffold Steps (Required)
 
-Always start with the official Elysia generator and Bun installs. Do not hand-roll the project.
+Always start with the official latest Elysia generator and Bun installs: `bun create elysia@latest <target>`. Do not hand-roll the project or keep stale scaffold dependencies.
 
-1. `bun create elysia server`
+1. `bun create elysia@latest server`
 2. `cd server`
 3. `bun add @elysiajs/cors @elysiajs/openapi better-auth drizzle-orm pg @modelcontextprotocol/sdk elysia-mcp logixlysia zod`
 4. `bun add -d drizzle-kit typescript`
